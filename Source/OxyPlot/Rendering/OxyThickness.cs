@@ -46,6 +46,24 @@ namespace OxyPlot
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 31 + top.GetHashCode();
+                hash = hash * 31 + bottom.GetHashCode();
+                hash = hash * 31 + left.GetHashCode();
+                hash = hash * 31 + right.GetHashCode();
+
+                return hash;
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="OxyThickness" /> struct.
         /// </summary>
         /// <param name="left">The left.</param>

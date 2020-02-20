@@ -326,5 +326,23 @@ namespace OxyPlot
                 Math.Max(Math.Min(this.Right, clipRect.Right), clipRect.Left),
                 Math.Max(Math.Min(this.Bottom, clipRect.Bottom), clipRect.Top));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 31 + top.GetHashCode();
+                hash = hash * 31 + height.GetHashCode();
+                hash = hash * 31 + left.GetHashCode();
+                hash = hash * 31 + width.GetHashCode();
+
+                return hash;
+            }
+        }
     }
 }
