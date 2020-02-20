@@ -337,11 +337,13 @@ namespace OxyPlot
             }
         }
 
+        private OxyThickness _plotMargins;
+
         /// <summary>
         /// Gets the actual plot margins.
         /// </summary>
         /// <value>The actual plot margins.</value>
-        public OxyThickness ActualPlotMargins { get; private set; }
+        public OxyThickness ActualPlotMargins { get; protected set; }
 
         /// <summary>
         /// Gets the plot view that renders this plot.
@@ -396,7 +398,7 @@ namespace OxyPlot
         /// Gets the legend area.
         /// </summary>
         /// <value>The legend area.</value>
-        public OxyRect LegendArea { get; private set; }
+        public OxyRect LegendArea { get; protected set; }
 
         /// <summary>
         /// Gets or sets the background color of the legend. Use <c>null</c> for no background.
@@ -570,24 +572,24 @@ namespace OxyPlot
         /// <summary>
         /// Gets the total width of the plot (in device units).
         /// </summary>
-        public double Width { get; private set; }
+        public double Width { get; protected set; }
 
         /// <summary>
         /// Gets the total height of the plot (in device units).
         /// </summary>
-        public double Height { get; private set; }
+        public double Height { get; protected set; }
 
         /// <summary>
         /// Gets the area including both the plot and the axes. Outside legends are rendered outside this rectangle.
         /// </summary>
         /// <value>The plot and axis area.</value>
-        public OxyRect PlotAndAxisArea { get; private set; }
+        public OxyRect PlotAndAxisArea { get; protected set; }
 
         /// <summary>
         /// Gets the plot area. This area is used to draw the series (not including axes or legends).
         /// </summary>
         /// <value>The plot area.</value>
-        public OxyRect PlotArea { get; private set; }
+        public OxyRect PlotArea { get; protected set; }
 
         /// <summary>
         /// Gets or sets the distance between two neighborhood tiers of the same AxisPosition.
@@ -615,7 +617,20 @@ namespace OxyPlot
         /// Gets or sets the margins around the plot (this should be large enough to fit the axes).
         /// If any of the values is set to <c>double.NaN</c>, the margin is adjusted to the value required by the axes.
         /// </summary>
-        public OxyThickness PlotMargins { get; set; }
+        public OxyThickness PlotMargins 
+        {
+            get => _plotMargins; 
+            set
+            {
+                _plotMargins = value;
+                ActualPlotMargins =
+                new OxyThickness(
+                    double.IsNaN(_plotMargins.Left) ? 0 : _plotMargins.Left,
+                    double.IsNaN(_plotMargins.Top) ? 0 : _plotMargins.Top,
+                    double.IsNaN(_plotMargins.Right) ? 0 : _plotMargins.Right,
+                    double.IsNaN(_plotMargins.Bottom) ? 0 : _plotMargins.Bottom);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the type of the coordinate system.
@@ -1262,7 +1277,7 @@ namespace OxyPlot
         /// <summary>
         /// Updates the axis transforms.
         /// </summary>
-        private void UpdateAxisTransforms()
+        protected void UpdateAxisTransforms()
         {
             // Update the axis transforms
             foreach (var a in this.Axes)
@@ -1274,7 +1289,7 @@ namespace OxyPlot
         /// <summary>
         /// Enforces the same scale on all axes.
         /// </summary>
-        private void EnforceCartesianTransforms()
+        protected void EnforceCartesianTransforms()
         {
             var notColorAxes = this.Axes.Where(a => !(a is IColorAxis)).ToArray();
 
@@ -1300,7 +1315,7 @@ namespace OxyPlot
         /// <summary>
         /// Updates the intervals (major and minor step values).
         /// </summary>
-        private void UpdateIntervals()
+        protected void UpdateIntervals()
         {
             // Update the intervals for all axes
             foreach (var a in this.Axes)

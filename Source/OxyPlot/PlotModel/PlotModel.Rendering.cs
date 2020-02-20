@@ -201,7 +201,7 @@ namespace OxyPlot
         /// <param name="title">The title.</param>
         /// <param name="errorMessage">The error message.</param>
         /// <param name="fontSize">The font size. The default value is 12.</param>
-        private void RenderErrorMessage(IRenderContext rc, string title, string errorMessage, double fontSize = 12)
+        protected void RenderErrorMessage(IRenderContext rc, string title, string errorMessage, double fontSize = 12)
         {
             var p0 = new ScreenPoint(10, 10);
             rc.DrawText(p0, title, this.TextColor, fontWeight: FontWeights.Bold, fontSize: fontSize);
@@ -235,14 +235,14 @@ namespace OxyPlot
         /// </summary>
         /// <param name="rc">The render context.</param>
         /// <returns><c>true</c> if the margins were adjusted.</returns>
-        private bool AdjustPlotMargins(IRenderContext rc)
+        protected virtual bool AdjustPlotMargins(IRenderContext rc)
         {
             var currentMargin = this.ActualPlotMargins;
 
             for (var position = AxisPosition.Left; position <= AxisPosition.Bottom; position++)
             {
-                var axesOfPosition = this.Axes.Where(a => a.IsAxisVisible && a.Position == position).ToList();
-                var requiredSize = this.AdjustAxesPositions(rc, axesOfPosition);
+                var axesOfPosition = this.Axes.Where(a => a.IsAxisVisible && a.Position == position);
+                var requiredSize = (axesOfPosition.Any()) ? this.AdjustAxesPositions(rc, axesOfPosition.ToList()) : 0;
 
                 if (!this.IsPlotMarginAutoSized(position))
                 {
@@ -253,11 +253,10 @@ namespace OxyPlot
             }
 
             // Special case for AngleAxis which is all around the plot
-            var angularAxes = this.Axes.Where(a => a.IsAxisVisible).OfType<AngleAxis>().Cast<Axis>().ToList();
-
+            var angularAxes = this.Axes.Where(a => a.IsAxisVisible).OfType<AngleAxis>().Cast<Axis>();
             if (angularAxes.Any())
             {
-                var requiredSize = this.AdjustAxesPositions(rc, angularAxes);
+                var requiredSize = this.AdjustAxesPositions(rc, angularAxes.ToList());
 
                 for (var position = AxisPosition.Left; position <= AxisPosition.Bottom; position++)
                 {
@@ -291,7 +290,7 @@ namespace OxyPlot
 
             foreach (var positionTier in parallelAxes.Select(a => a.PositionTier).Distinct().OrderBy(l => l))
             {
-                var axesOfPositionTier = parallelAxes.Where(a => a.PositionTier == positionTier).ToList();
+                var axesOfPositionTier = parallelAxes.Where(a => a.PositionTier == positionTier);
                 var maxSizeOfPositionTier = MaxSizeOfPositionTier(rc, axesOfPositionTier);
                 var minValueOfPositionTier = maxValueOfPositionTier;
 
@@ -332,7 +331,7 @@ namespace OxyPlot
         /// </summary>
         /// <param name="rc">The render context.</param>
         /// <param name="layer">The layer.</param>
-        private void RenderAnnotations(IRenderContext rc, AnnotationLayer layer)
+        protected void RenderAnnotations(IRenderContext rc, AnnotationLayer layer)
         {
             foreach (var a in this.Annotations.Where(a => a.Layer == layer))
             {
@@ -348,7 +347,7 @@ namespace OxyPlot
         /// </summary>
         /// <param name="rc">The render context.</param>
         /// <param name="layer">The layer.</param>
-        private void RenderAxes(IRenderContext rc, AxisLayer layer)
+        protected void RenderAxes(IRenderContext rc, AxisLayer layer)
         {
             // render pass 0
             foreach (var a in this.Axes.Where(a => a.IsAxisVisible && a.Layer == layer))
@@ -371,7 +370,7 @@ namespace OxyPlot
         /// Renders the series backgrounds.
         /// </summary>
         /// <param name="rc">The render context.</param>
-        private void RenderBackgrounds(IRenderContext rc)
+        protected void RenderBackgrounds(IRenderContext rc)
         {
             // Render the main background of the plot area (only if there are axes)
             // The border is rendered by DrawRectangleAsPolygon to ensure that it is pixel aligned with the tick marks.
@@ -391,7 +390,7 @@ namespace OxyPlot
         /// </summary>
         /// <param name="rc">The render context.</param>
         /// <remarks>The border will only by rendered if there are axes in the plot.</remarks>
-        private void RenderBox(IRenderContext rc)
+        protected void RenderBox(IRenderContext rc)
         {
             // The border is rendered by DrawRectangleAsPolygon to ensure that it is pixel aligned with the tick marks (cannot use DrawRectangle here).
             if (this.Axes.Count > 0)
@@ -404,7 +403,7 @@ namespace OxyPlot
         /// Renders the series.
         /// </summary>
         /// <param name="rc">The render context.</param>
-        private void RenderSeries(IRenderContext rc)
+        protected void RenderSeries(IRenderContext rc)
         {
             foreach (var s in this.Series.Where(s => s.IsVisible))
             {
@@ -419,7 +418,7 @@ namespace OxyPlot
         /// Renders the title and subtitle.
         /// </summary>
         /// <param name="rc">The render context.</param>
-        private void RenderTitle(IRenderContext rc)
+        protected void RenderTitle(IRenderContext rc)
         {
             var titleSize = rc.MeasureText(this.Title, this.ActualTitleFont, this.TitleFontSize, this.TitleFontWeight);
 
@@ -464,7 +463,7 @@ namespace OxyPlot
         /// Calculates the plot area (subtract padding, title size and outside legends)
         /// </summary>
         /// <param name="rc">The rendering context.</param>
-        private void UpdatePlotArea(IRenderContext rc)
+        protected virtual void UpdatePlotArea(IRenderContext rc)
         {
             var plotArea = new OxyRect(
                 this.Padding.Left,

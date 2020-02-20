@@ -1345,7 +1345,7 @@ namespace OxyPlot.Axes
         /// Resets the current values.
         /// </summary>
         /// <remarks>The current values may be modified during update of max/min and rendering.</remarks>
-        protected internal virtual void ResetCurrentValues()
+        public virtual void ResetCurrentValues()
         {
         }
 

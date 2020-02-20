@@ -21,7 +21,7 @@ namespace OxyPlot
         /// Makes the LegendOrientation property safe.
         /// </summary>
         /// <remarks>If Legend is positioned left or right, force it to vertical orientation</remarks>
-        private void EnsureLegendProperties()
+        protected void EnsureLegendProperties()
         {
             switch (this.LegendPosition)
             {
@@ -261,7 +261,7 @@ namespace OxyPlot
         /// </summary>
         /// <param name="rc">The render context.</param>
         /// <param name="rect">The rectangle.</param>
-        private void RenderLegends(IRenderContext rc, OxyRect rect)
+        protected void RenderLegends(IRenderContext rc, OxyRect rect)
         {
             this.RenderOrMeasureLegends(rc, rect);
         }

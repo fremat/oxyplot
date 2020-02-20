@@ -462,7 +462,7 @@ namespace OxyPlot.Axes
         /// Resets the current values.
         /// </summary>
         /// <remarks>The current values may be modified during update of max/min and rendering.</remarks>
-        protected internal override void ResetCurrentValues()
+        public override void ResetCurrentValues()
         {
             base.ResetCurrentValues();
             this.currentBarOffset = this.BarOffset != null ? this.BarOffset.ToArray() : null;
